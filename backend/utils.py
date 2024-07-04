@@ -1,7 +1,7 @@
 from moviepy.editor import VideoFileClip
 
 def save_video(video_bytes, filename):
-    with open('replica_' + filename, 'wb') as f:
+    with open(filename, 'wb') as f:
         f.write(video_bytes)
 
 class MP4toMP3Converter():

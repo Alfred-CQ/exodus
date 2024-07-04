@@ -68,7 +68,21 @@ def upload_to_aws():
              } ), 200
         
     elif processing_type == 'both':
-        pass
+        s3_sender.send_object_to_s3(file_bytes, file.filename)
+        
+        save_video(file_bytes, file.filename)
+        converter = MP4toMP3Converter()
+        mp3_filename = converter.convert_and_save(file.filename)    
+        with open(mp3_filename, "rb") as f:
+            mp3_bytes = f.read()
+        s3_sender.send_object_to_s3(mp3_bytes, mp3_filename)
+        
+        return jsonify(
+            {'message': 'Files uploaded successfully to AWS',
+             'file_path': file_path,
+             'processing_type': processing_type
+             } ), 200
+        
     else:
         return jsonify(
             {'message': 'Not accepted processing type',
