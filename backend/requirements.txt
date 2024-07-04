@@ -2,3 +2,4 @@ Flask
 Flask-CORS
 psycopg2-binary
 boto3
+moviepy

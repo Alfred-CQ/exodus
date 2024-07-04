@@ -4,6 +4,8 @@ from flask_cors import CORS
 from config import Config
 from AWS.S3VideoSender import S3VideoSender
 
+from utils import MP4toMP3Converter, save_video
+
 app = Flask(__name__)
 db = Config()
 CORS(app)
@@ -43,10 +45,35 @@ def upload_to_aws():
 
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file_bytes = file.read()
-  
-    s3_sender.send_object_to_s3(file_bytes, file.filename) 
-
-    return jsonify({'message': 'File uploaded successfully to AWS', 'file_path': file_path, 'processing_type': processing_type}), 200
+    
+    if processing_type == 'video':
+        s3_sender.send_object_to_s3(file_bytes, file.filename)
+        return jsonify(
+            {'message': 'Video uploaded successfully to AWS',
+             'file_path': file_path,
+             'processing_type': processing_type
+             } ), 200
+    elif processing_type == 'audio':
+        save_video(file_bytes, file.filename)
+        converter = MP4toMP3Converter()
+        mp3_filename = converter.convert_and_save(file.filename)    
+        with open(mp3_filename, "rb") as f:
+            mp3_bytes = f.read()
+        s3_sender.send_object_to_s3(mp3_bytes, mp3_filename)
+        
+        return jsonify(
+            {'message': 'Audio uploaded successfully to AWS',
+             'file_path': file_path,
+             'processing_type': processing_type
+             } ), 200
+        
+    elif processing_type == 'both':
+        pass
+    else:
+        return jsonify(
+            {'message': 'Not accepted processing type',
+             'processing_type': processing_type
+             } ), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
