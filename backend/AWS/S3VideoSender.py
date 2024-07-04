@@ -4,7 +4,7 @@ from botocore.exceptions import NoCredentialsError, ClientError
 from dotenv import load_dotenv
 
 class S3VideoSender():
-    def __init__(self, bucket_name='exodus-bucket-test', origin_path = './', ):
+    def __init__(self, bucket_name='exodus-bucket-test2', origin_path = './', ):
         load_dotenv()
         self.origin_path = origin_path
         self.bucket_name = bucket_name
@@ -23,6 +23,7 @@ class S3VideoSender():
     def send_object_to_s3(self, obj_bytes, file_name):
         obj_bytes_io = io.BytesIO(obj_bytes)
         s3_file_name = file_name
+        print('XD inside')
         try:
             self.s3.upload_fileobj(obj_bytes_io, self.bucket_name, s3_file_name)
             print(f'File {file_name} load to {self.bucket_name} as {s3_file_name}')

@@ -5,10 +5,21 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import LongMenu from "./LongMenu";
 
-const PropertyCard = ({ imageSrc, name, pipeline, type, time, tags }) => {
-  const tagList = tags.split(" ");
-  const displayedTags = tagList.slice(0, 5);
-  const additionalTags = tagList.length > 5 ? tagList.slice(5) : [];
+const PropertyCard = ({
+  imageSrc,
+  name,
+  pipeline,
+  type,
+  time,
+  tags,
+  weights,
+}) => {
+  const taggedWeights = tags.map((tag, index) => ({
+    tag: `#${tag}`,
+    weight: weights[index],
+  }));
+  const displayedTags = taggedWeights.slice(0, 5);
+  const additionalTags = taggedWeights.length > 5 ? taggedWeights.slice(5) : [];
 
   return (
     <Card
@@ -42,7 +53,7 @@ const PropertyCard = ({ imageSrc, name, pipeline, type, time, tags }) => {
       />
       <Box sx={{ alignSelf: "center", ml: 2 }}>
         <Typography variant="body2" color="text.secondary" fontWeight="regular">
-          {"Proccesed by Exodus"}
+          {"Processed by Exodus"}
         </Typography>
         <Typography variant="h5" fontWeight="bold" noWrap gutterBottom>
           {name}
@@ -105,7 +116,7 @@ const PropertyCard = ({ imageSrc, name, pipeline, type, time, tags }) => {
             flexWrap: "wrap",
           }}
         >
-          {displayedTags.map((tag, index) => (
+          {displayedTags.map(({ tag }, index) => (
             <a
               href={`#${tag.replace("#", "")}`}
               key={index}
@@ -118,12 +129,10 @@ const PropertyCard = ({ imageSrc, name, pipeline, type, time, tags }) => {
               {tag}
             </a>
           ))}
-          {additionalTags.length > 0 && (
-            <Box sx={{ position: "absolute", top: 8, right: 8 }}>
-              {" "}
-              <LongMenu tags={additionalTags} />
-            </Box>
-          )}
+
+          <Box sx={{ position: "absolute", top: 8, right: 8 }}>
+            <LongMenu tags={taggedWeights} />
+          </Box>
         </Box>
       </Box>
     </Card>

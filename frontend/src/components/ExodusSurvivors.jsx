@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Container, Grid, Typography, Box } from "@mui/material";
 import PropertyCard from "../components/PropertyCard";
-
-const ExodusSurvivors = () => {
-  const properties = [
+/*
+const properties = [
     {
       imageSrc:
         "https://www.esportmaniacos.com/wp-content/uploads/2022/02/Riven_201-780x470.jpg",
       Name: "123 Main St, Phoenix",
       Pipeline: "Exodus",
       Type: "Audio",
-      tags: "#lol #dota #free #gg #ff #mfr #g2",
+      tags: ["lol", "dota", "free", "gg", "ff", "mfr", "g2"],
+      weights: [12, 11, 10, 9, 8, 7, 1],
       Time: 1234.1234,
     },
     {
@@ -20,9 +21,48 @@ const ExodusSurvivors = () => {
       Pipeline: "AWS",
       Type: "Audio",
       Time: 1234.1234,
-      tags: "#class #ihc",
+      tags: ["class", "ihc"],
+      weights: [12, 11],
     },
   ];
+
+  */
+
+const ExodusSurvivors = () => {
+  const [properties, setProperties] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/files");
+        const files = response.data;
+        console.log(files.imgSrc);
+        const propertyPromises = files.map(async (file) => {
+          const fileResponse = await axios.get(file.file_name);
+          const fileData = fileResponse.data;
+
+          return {
+            imageSrc: `http://localhost:5000/${file.imgSrc}`,
+            Name: fileData.Name,
+            Pipeline: fileData.Pipeline,
+            Type: fileData.Type,
+            tags: fileData.Labels.map((label) => label.Label),
+            weights: fileData.Labels.map(
+              (label) => label["Weighted Confidence"]
+            ),
+            Time: fileData.Time,
+          };
+        });
+
+        const propertiesData = await Promise.all(propertyPromises);
+        setProperties(propertiesData);
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Container maxWidth="xl">
@@ -51,6 +91,7 @@ const ExodusSurvivors = () => {
               type={property.Type}
               time={property.Time}
               tags={property.tags}
+              weights={property.weights}
             />
           </Grid>
         ))}

@@ -87,7 +87,12 @@ const LandingPage = () => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("processing_type", processingType);
-
+    const thumbnailBlob = await (await fetch(thumbnailUrls[index])).blob();
+    formData.append(
+      "imgThumbnail",
+      thumbnailBlob,
+      `thumbnail_${file.name}.jpg`
+    );
     try {
       const response = await axios.post(
         "http://localhost:5000/upload-to-aws",

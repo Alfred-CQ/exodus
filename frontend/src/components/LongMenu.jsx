@@ -42,9 +42,9 @@ const LongMenu = ({ tags }) => {
           },
         }}
       >
-        {tags.map((tag, index) => (
+        {tags.map(({ tag, weight }, index) => (
           <MenuItem key={index} onClick={handleClose}>
-            {tag}
+            {`${tag.replace("#", "")} - Wc: ${weight.toFixed(2)}`}
           </MenuItem>
         ))}
       </Menu>
