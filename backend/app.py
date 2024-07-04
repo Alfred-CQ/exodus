@@ -38,13 +38,15 @@ def upload_to_aws():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part in the request'}), 400
 
+    processing_type = request.form.get('processing_type')
     file = request.files['file']
+
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file_bytes = file.read()
   
     s3_sender.send_object_to_s3(file_bytes, file.filename) 
 
-    return jsonify({'message': 'File uploaded successfully to AWS', 'file_path': file_path}), 200
+    return jsonify({'message': 'File uploaded successfully to AWS', 'file_path': file_path, 'processing_type': processing_type}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
