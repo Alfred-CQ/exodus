@@ -1,20 +1,8 @@
 import React, { useRef, useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Chip,
-  Stack,
-  Card,
-  CardContent,
-  CardMedia,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
-import CloudCircleIcon from "@mui/icons-material/CloudCircle";
-import ThunderstormIcon from "@mui/icons-material/Thunderstorm";
 
-const UploadBox = ({ onFileChange, onSendToExodus, uploading }) => {
+const UploadBox = ({ onFilesChange }) => {
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -34,19 +22,23 @@ const UploadBox = ({ onFileChange, onSendToExodus, uploading }) => {
   const handleDrop = (event) => {
     event.preventDefault();
     setIsDragging(false);
-    const file = event.dataTransfer.files[0];
-    if (file) {
-      onFileChange(file);
-      console.log("File selected via drag and drop:", file);
+    const filesArray = Array.from(event.dataTransfer.files);
+    console.log("File selected via drag and drop:", filesArray);
+    if (filesArray.length > 0) {
+      handleFileChange(filesArray);
     }
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      onFileChange(file);
-      console.log("File selected via input:", file);
+  const handleInput = (event) => {
+    const filesArray = Array.from(event.target.files);
+    console.log("File selected via input:", filesArray);
+    if (filesArray.length > 0) {
+      handleFileChange(filesArray);
     }
+  };
+
+  const handleFileChange = (files) => {
+    onFilesChange(files);
   };
 
   return (
@@ -54,7 +46,7 @@ const UploadBox = ({ onFileChange, onSendToExodus, uploading }) => {
       component="section"
       sx={{
         p: 2,
-        border: "1px dashed #673ab7",
+        border: "1px dashed #00bcd4",
         borderRadius: "8px",
         textAlign: "center",
         cursor: "pointer",
@@ -73,7 +65,8 @@ const UploadBox = ({ onFileChange, onSendToExodus, uploading }) => {
       <input
         type="file"
         ref={fileInputRef}
-        onChange={handleFileChange}
+        onChange={handleInput}
+        multiple
         style={{ display: "none" }}
       />
     </Box>

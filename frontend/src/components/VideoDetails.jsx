@@ -17,6 +17,7 @@ const VideoDetails = ({
   videoFile,
   thumbnailUrl,
   uploading,
+  onSendToAWS,
   onSendToExodus,
 }) => (
   <Card
@@ -62,8 +63,13 @@ const VideoDetails = ({
           />
         </Stack>
         <Stack direction="row" spacing={2} sx={{ mt: 2, mb: -2 }}>
-          <Button variant="outlined" startIcon={<ThunderstormIcon />}>
-            Send to AWS
+          <Button
+            variant="outlined"
+            startIcon={<ThunderstormIcon />}
+            onClick={onSendToAWS}
+            disabled={uploading}
+          >
+            {uploading ? "Uploading..." : "Send to AWS"}
           </Button>
           <Button
             variant="contained"
