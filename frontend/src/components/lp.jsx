@@ -13,11 +13,18 @@ const LandingPage = () => {
   const [thumbnailUrls, setThumbnailUrls] = useState([]);
   const [uploading, setUploading] = useState([]);
   const [progress, setProgress] = useState([]);
+  const [processingType, setProcessingType] = useState("");
 
   const navigate = useNavigate();
 
   const navigateToExodus = () => {
     navigate("/exodus-survivors");
+  };
+
+  const handleProcessingTypeSelect = (type, index) => {
+    console.log(type);
+    setProcessingType(type);
+    handleIndividualSendToAWS(videoFiles[index], index, type);
   };
 
   useEffect(() => {
@@ -60,12 +67,12 @@ const LandingPage = () => {
     setProgress(newFiles.map(() => 0));
   };
 
-  const handleSendToAWS = async () => {
+  const handleSendToAWS = async (processing_type) => {
     setUploading(videoFiles.map(() => true));
 
     try {
       await Promise.all(
-        videoFiles.map((file, index) => sendToAWS(file, index))
+        videoFiles.map((file, index) => sendToAWS(file, index, processing_type))
       );
       console.log("All files uploaded to AWS successfully");
     } catch (error) {
@@ -76,9 +83,10 @@ const LandingPage = () => {
     }
   };
 
-  const sendToAWS = async (file, index) => {
+  const sendToAWS = async (file, index, processingType) => {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("processing_type", processingType);
 
     try {
       const response = await axios.post(
@@ -148,13 +156,13 @@ const LandingPage = () => {
     }
   };
 
-  const handleIndividualSendToAWS = (file, index) => {
+  const handleIndividualSendToAWS = (file, index, type) => {
     setUploading((prevUploading) => [
       ...prevUploading.slice(0, index),
       true,
       ...prevUploading.slice(index + 1),
     ]);
-    sendToAWS(file, index).finally(() => {
+    sendToAWS(file, index, type).finally(() => {
       setUploading((prevUploading) => [
         ...prevUploading.slice(0, index),
         false,
@@ -214,8 +222,10 @@ const LandingPage = () => {
                 videoFile={file}
                 thumbnailUrl={thumbnailUrls[index]}
                 uploading={uploading[index]}
-                onSendToAWS={() => handleIndividualSendToAWS(file, index)}
                 onSendToExodus={() => handleIndividualSendToExodus(file, index)}
+                onProcessingTypeSelect={(type) =>
+                  handleProcessingTypeSelect(type, index)
+                }
               />
               {uploading[index] && <ProgressBar progress={progress[index]} />}
             </Box>
@@ -235,7 +245,7 @@ const LandingPage = () => {
               variant="contained"
               color="primary"
               sx={{ width: "100%" }}
-              onClick={handleSendToAWS}
+              onClick={() => handleSendToAWS("video")}
               disabled={uploading.some((status) => status)}
             >
               Send All to AWS

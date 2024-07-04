@@ -7,17 +7,19 @@ const ExodusSurvivors = () => {
     {
       imageSrc:
         "https://www.esportmaniacos.com/wp-content/uploads/2022/02/Riven_201-780x470.jpg",
-      main_title: "$280k - $310k",
-      sub_title: "123 Main St, Phoenix",
-      pipeline: "Exodus",
+      Name: "123 Main St, Phoenix",
+      Pipeline: "Exodus",
+      Type: "Audio",
       tags: "#lol #dota #free #gg #ff #mfr #g2",
+      Time: 1234.1234,
     },
     {
       imageSrc:
         "https://www.esportmaniacos.com/wp-content/uploads/2022/02/Riven_201-780x470.jpg",
-      main_title: "$280k - $310k",
-      sub_title: "123 Main St, Phoenix",
-      pipeline: "AWS",
+      Name: "123 Main St, Phoenix",
+      Pipeline: "AWS",
+      Type: "Audio",
+      Time: 1234.1234,
       tags: "#class #ihc",
     },
   ];
@@ -44,9 +46,10 @@ const ExodusSurvivors = () => {
           <Grid item xs={12} sm={6} md={5} key={index}>
             <PropertyCard
               imageSrc={property.imageSrc}
-              main_title={property.main_title}
-              sub_title={property.sub_title}
-              pipeline={property.pipeline}
+              name={property.Name}
+              pipeline={property.Pipeline}
+              type={property.Type}
+              time={property.Time}
               tags={property.tags}
             />
           </Grid>

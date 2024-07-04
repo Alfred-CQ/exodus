@@ -1,10 +1,11 @@
 import React from "react";
 import { Card, CardMedia, Box, Typography, Chip } from "@mui/material";
 import InfoRounded from "@mui/icons-material/InfoRounded";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import LongMenu from "./LongMenu";
 
-const PropertyCard = ({ imageSrc, main_title, sub_title, pipeline, tags }) => {
+const PropertyCard = ({ imageSrc, name, pipeline, type, time, tags }) => {
   const tagList = tags.split(" ");
   const displayedTags = tagList.slice(0, 5);
   const additionalTags = tagList.length > 5 ? tagList.slice(5) : [];
@@ -41,10 +42,10 @@ const PropertyCard = ({ imageSrc, main_title, sub_title, pipeline, tags }) => {
       />
       <Box sx={{ alignSelf: "center", ml: 2 }}>
         <Typography variant="body2" color="text.secondary" fontWeight="regular">
-          {main_title}
+          {"Proccesed by Exodus"}
         </Typography>
         <Typography variant="h5" fontWeight="bold" noWrap gutterBottom>
-          {sub_title}
+          {name}
         </Typography>
         <Box sx={{ ml: 1, display: "flex", alignItems: "center" }}>
           <Chip
@@ -68,7 +69,7 @@ const PropertyCard = ({ imageSrc, main_title, sub_title, pipeline, tags }) => {
             size="small"
             variant="outlined"
             icon={<AccessTimeFilledIcon />}
-            label={"Time: "}
+            label={`Time: ${time.toFixed(2)}`}
             sx={{
               ".MuiChip-icon": {
                 fontSize: 16,
@@ -77,6 +78,22 @@ const PropertyCard = ({ imageSrc, main_title, sub_title, pipeline, tags }) => {
               },
               borderColor: "#64ffda",
               color: "#64ffda",
+              mr: 1,
+            }}
+          />
+          <Chip
+            size="small"
+            variant="outlined"
+            icon={<AutoAwesomeIcon />}
+            label={`Type: ${type}`}
+            sx={{
+              ".MuiChip-icon": {
+                fontSize: 16,
+                ml: "4px",
+                color: "#d500f9",
+              },
+              borderColor: "#d500f9",
+              color: "#ea80fc",
             }}
           />
         </Box>
