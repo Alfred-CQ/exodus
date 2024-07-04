@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Container, Typography, Button } from "@mui/material";
+import { Box, Container, Typography, Button, Fab } from "@mui/material";
+import LandscapeIcon from "@mui/icons-material/Landscape";
+import { useNavigate } from "react-router-dom";
+
 import UploadBox from "./UploadBox";
 import VideoDetails from "./VideoDetails";
 import ProgressBar from "./ProgressBar";
@@ -10,6 +13,12 @@ const LandingPage = () => {
   const [thumbnailUrls, setThumbnailUrls] = useState([]);
   const [uploading, setUploading] = useState([]);
   const [progress, setProgress] = useState([]);
+
+  const navigate = useNavigate();
+
+  const navigateToExodus = () => {
+    navigate("/exodus-survivors");
+  };
 
   useEffect(() => {
     const generateThumbnails = async () => {
@@ -243,6 +252,19 @@ const LandingPage = () => {
           </Box>
         </Box>
       )}
+      <Fab
+        variant="extended"
+        color="primary"
+        sx={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+        }}
+        onClick={navigateToExodus}
+      >
+        <LandscapeIcon sx={{ mr: 1 }} />
+        Promised Land
+      </Fab>
     </Container>
   );
 };

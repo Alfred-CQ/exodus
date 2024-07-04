@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import Config
+from AWS.S3VideoSender import S3VideoSender
 
 app = Flask(__name__)
 db = Config()
@@ -9,6 +10,7 @@ CORS(app)
 
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+s3_sender = S3VideoSender(origin_path='./uploads/')
 
 @app.route('/')
 def hello():
@@ -38,7 +40,9 @@ def upload_to_aws():
 
     file = request.files['file']
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(file_path)
+    file_bytes = file.read()
+  
+    s3_sender.send_object_to_s3(file_bytes, file.filename) 
 
     return jsonify({'message': 'File uploaded successfully to AWS', 'file_path': file_path}), 200
 
